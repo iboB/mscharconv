@@ -2,6 +2,8 @@
 
 `<charconv>` from [Microsoft STL](https://github.com/microsoft/STL), but multi-platform.
 
+Tested with MSVC, gcc, and clang on Windows and Linux (will likely work on other platforms supported by any of these compilers)
+
 ## Usage
 
 The library is header only. You can clone the repo or copy the contents of the include directory in your project.
@@ -10,7 +12,7 @@ Alternatively you can use with CMake. The provided CMakeLists.txt defines an `IN
 
 To use the library in your code simply include `<msstl/charconv.hpp>` and use `to_chars` and `from_chars` from the namespace `msstl`.
 
-A C++17 or later compatible compiler is needed.
+C++17 or later is needed.
 
 ### Example
 
