@@ -4,7 +4,7 @@
 
 #include <string_view>
 
-namespace msstl {
+namespace msstl::util {
 
 template <typename T, std::enable_if_t<std::is_integral_v<T>, int> = 0>
 bool from_string(std::string_view str, T& out, int base = 10) {
@@ -22,4 +22,4 @@ bool from_string(std::string_view str, T& out) {
     return ret.ptr == end;
 }
 
-}
+} // msstl::util

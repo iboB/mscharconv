@@ -1,5 +1,13 @@
-#include <mscharconv/charconv.hpp>
-#include <mscharconv/util.hpp>
+// Copyright (c) 2021 Borislav Stanimirov
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+// The purpose of this test is to check that the library can be built on
+// various platforms with various compilers.
+// Complete unit testing of the code is part of the microsoft/STL project
+// at https://github.com/microsoft/STL
+
+#include <msstl/charconv.hpp>
+#include <msstl/util.hpp>
 
 #include <iostream>
 #include <string>
@@ -37,7 +45,7 @@ int main() {
     CHECK(to_string(3.1415f) == "3.1415");
     CHECK(to_string(1.233) == "1.233");
 
-    using msstl::from_string;
+    using msstl::util::from_string;
     short s;
     CHECK(!from_string("asd", s));
     CHECK(!from_string("666s", s));
