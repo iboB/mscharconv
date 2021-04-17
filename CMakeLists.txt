@@ -13,6 +13,11 @@ else()
 endif()
 
 option(MSCHARCONV_BUILD_TESTS "mscharconv: build tests" ${dev_mode})
+option(MSCHARCONV_BUILD_EXAMPLES "mscharconv: build examples" ${dev_mode})
+
+if(MSCHARCONV_BUILD_EXAMPLES)
+    add_subdirectory(example)
+endif()
 
 if(MSCHARCONV_BUILD_TESTS)
     enable_testing()
