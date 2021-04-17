@@ -21,9 +21,9 @@
 
 //~ _STD_BEGIN
 
-[[nodiscard]] inline unsigned long _Floor_of_log_2(size_t _Value) noexcept { // returns floor(log_2(_Value))
+[[nodiscard]] inline ulong32 _Floor_of_log_2(size_t _Value) noexcept { // returns floor(log_2(_Value))
     _Value |= size_t{1}; // avoid undefined answer from _BitScanReverse for 0
-    unsigned long _Result;
+    ulong32 _Result;
 
 #ifdef _M_CEE_PURE
 #ifdef MSCHARCONV_64_BIT
@@ -47,7 +47,7 @@
     return _Result;
 }
 
-[[nodiscard]] inline unsigned long _Ceiling_of_log_2(const size_t _Value) noexcept { // returns ceil(log_2(_Value))
+[[nodiscard]] inline ulong32 _Ceiling_of_log_2(const size_t _Value) noexcept { // returns ceil(log_2(_Value))
                                                                                   // pre: _Value > 1
     return 1 + _Floor_of_log_2(_Value - 1);
 }

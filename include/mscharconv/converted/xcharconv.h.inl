@@ -13,8 +13,8 @@
 //~ #include <type_traits>
 //~ #include <xerrc.h>
 
-#if !_HAS_CXX17
-//~ #error The contents of <charconv> are only available with C++17. (Also, you should not include this internal header.)
+#if 0 //~#if !_HAS_CXX17
+#error The contents of <charconv> are only available with C++17. (Also, you should not include this internal header.)
 #endif // !_HAS_CXX17
 
 //~ #pragma pack(push, _CRT_PACKING)
@@ -39,8 +39,8 @@ enum class chars_format {
 struct to_chars_result {
     char* ptr;
     std::errc ec;
-#if _HAS_CXX20
-//~     _NODISCARD friend bool operator==(const to_chars_result&, const to_chars_result&) = default;
+#if 0 //~#if _HAS_CXX20
+    [[nodiscard]] friend bool operator==(const to_chars_result&, const to_chars_result&) = default;
 #endif // _HAS_CXX20
 };
 

@@ -1,5 +1,9 @@
 #include <cassert>
 #include <cstring>
+#include <cstdint>
+#include <climits>
+#include <type_traits>
+#include <algorithm>
 
 namespace msstl {
 
@@ -11,11 +15,19 @@ using ulong32 = std::conditional_t<sizeof(unsigned long) == 4, unsigned long, ui
 #   define MSCHARCONV_64_BIT
 #endif
 
+#if defined(_MSC_VER)
+#   define MSCHARCONV_FORCE_INLINE __forceinline
+#else
+#   define MSCHARCONV_FORCE_INLINE __attribute__((always_inline)) inline
+#endif
+
+#define MSCHARCONF_ASSERT_MSG(cnd, msg) assert(cnd)
+
 inline void ms_verify_range(const char* first, const char* last) { assert(first <= last); }
 
 template <class To, class From>
 To bit_cast(const From& val) noexcept {
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
     return __builtin_bit_cast(To, val);
 #else
     To to;
@@ -23,6 +35,29 @@ To bit_cast(const From& val) noexcept {
     return to;
 #endif
 }
+
+#if !defined(_MSC_VER)
+inline char _BitScanForward(uint32_t* bit, uint32_t n) {
+    if (!n) return 0;
+    *bit = uint32_t(__builtin_ctz(n));
+    return 1;
+}
+inline char _BitScanForward64(uint32_t* bit, uint64_t n) {
+    if (!n) return 0;
+    *bit = uint32_t(__builtin_ctzl(n));
+    return 1;
+}
+inline char _BitScanReverse(uint32_t* bit, uint32_t n) {
+    if (!n) return 0;
+    *bit = uint32_t(32 - 1 - __builtin_clz(n));
+    return 1;
+}
+inline char _BitScanReverse64(uint32_t* bit, uint64_t n) {
+    if (!n) return 0;
+    *bit = uint32_t(64 - 1 - __builtin_clzl(n));
+    return 1;
+}
+#endif
 
 #include "converted/m_floating_type_traits.inl"
 #include "converted/xbit_ops.h.inl"

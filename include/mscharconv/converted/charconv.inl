@@ -9,7 +9,7 @@
 //~ #include <yvals.h>
 //~ #if _STL_COMPILER_PREPROCESSOR
 
-#if !_HAS_CXX17
+#if 0 //~#if !_HAS_CXX17
 //~ #pragma message("The contents of <charconv> are available only with C++17 or later.")
 #else // ^^^ !_HAS_CXX17 / _HAS_CXX17 vvv
 //~ #include <cstring>
@@ -38,7 +38,7 @@ template <class _RawTy>
 [[nodiscard]] to_chars_result _Integer_to_chars(
     char* _First, char* const _Last, const _RawTy _Raw_value, const int _Base) noexcept {
     ms_verify_range(_First, _Last);
-    _STL_ASSERT(_Base >= 2 && _Base <= 36, "invalid base in to_chars()");
+    MSCHARCONF_ASSERT_MSG(_Base >= 2 && _Base <= 36, "invalid base in to_chars()");
 
     using _Unsigned = std::make_unsigned_t<_RawTy>;
 
@@ -209,7 +209,7 @@ to_chars_result to_chars(char* _First, char* _Last, bool _Value, int _Base = 10)
 //~ struct from_chars_result {
 //~     const char* ptr;
 //~     errc ec;
-#if _HAS_CXX20
+#if 0 //~#if _HAS_CXX20
 //~     _NODISCARD friend bool operator==(const from_chars_result&, const from_chars_result&) = default;
 #endif // _HAS_CXX20
 //~ };
@@ -238,7 +238,7 @@ template <class _RawTy>
 [[nodiscard]] from_chars_result _Integer_from_chars(
     const char* const _First, const char* const _Last, _RawTy& _Raw_value, const int _Base) noexcept {
     ms_verify_range(_First, _Last);
-    _STL_ASSERT(_Base >= 2 && _Base <= 36, "invalid base in from_chars()");
+    MSCHARCONF_ASSERT_MSG(_Base >= 2 && _Base <= 36, "invalid base in from_chars()");
 
     bool _Minus_sign = false;
 
@@ -472,7 +472,7 @@ struct _Big_integer_flt {
 
     const uint32_t _Bx = _Xval._Myused - 1;
 
-    _STL_INTERNAL_CHECK(_Xval._Mydata[_Bx] != 0); // _Big_integer_flt should always be trimmed
+    assert(_Xval._Mydata[_Bx] != 0); // _Big_integer_flt should always be trimmed
 
     ulong32 _Index; // Intentionally uninitialized for better codegen
 
@@ -892,7 +892,7 @@ int main() {
     }
 
     // If the _Denominator is zero, then uh oh. We can't divide by zero:
-    _STL_INTERNAL_CHECK(_Denominator._Myused != 0); // Division by zero
+    assert(_Denominator._Myused != 0); // Division by zero
 
     uint32_t _Max_numerator_element_index         = _Numerator._Myused - 1;
     const uint32_t _Max_denominator_element_index = _Denominator._Myused - 1;
@@ -1440,9 +1440,9 @@ inline void _Accumulate_decimal_digits_into_big_integer_flt(
     for (const uint8_t* _It = _First_digit; _It != _Last_digit; ++_It) {
         if (_Accumulator_count == 9) {
             [[maybe_unused]] const bool _Success1 = _Multiply(_Result, 1'000'000'000); // assumes no overflow
-            _STL_INTERNAL_CHECK(_Success1);
+            assert(_Success1);
             [[maybe_unused]] const bool _Success2 = _Add(_Result, _Accumulator); // assumes no overflow
-            _STL_INTERNAL_CHECK(_Success2);
+            assert(_Success2);
 
             _Accumulator       = 0;
             _Accumulator_count = 0;
@@ -1456,9 +1456,9 @@ inline void _Accumulate_decimal_digits_into_big_integer_flt(
     if (_Accumulator_count != 0) {
         [[maybe_unused]] const bool _Success3 =
             _Multiply_by_power_of_ten(_Result, _Accumulator_count); // assumes no overflow
-        _STL_INTERNAL_CHECK(_Success3);
+        assert(_Success3);
         [[maybe_unused]] const bool _Success4 = _Add(_Result, _Accumulator); // assumes no overflow
-        _STL_INTERNAL_CHECK(_Success4);
+        assert(_Success4);
     }
 }
 
@@ -1548,7 +1548,7 @@ template <class _FloatingType>
     if (_Fractional_shift > 0) {
         [[maybe_unused]] const bool _Shift_success1 =
             _Shift_left(_Fractional_numerator, _Fractional_shift); // assumes no overflow
-        _STL_INTERNAL_CHECK(_Shift_success1);
+        assert(_Shift_success1);
     }
 
     const uint32_t _Required_fractional_bits_of_precision = _Required_bits_of_precision - _Integer_bits_of_precision;
@@ -1580,7 +1580,7 @@ template <class _FloatingType>
 
     [[maybe_unused]] const bool _Shift_success2 =
         _Shift_left(_Fractional_numerator, _Remaining_bits_of_precision_required); // assumes no overflow
-    _STL_INTERNAL_CHECK(_Shift_success2);
+    assert(_Shift_success2);
 
     uint64_t _Fractional_mantissa = _Divide(_Fractional_numerator, _Fractional_denominator);
 
@@ -1846,7 +1846,7 @@ template <class _Floating>
     // We can return now. Note that we defer this check until after we scan the exponent, so that we can correctly
     // update _Next to point past the end of the exponent.
     if (_Mantissa_it == _Mantissa_first) {
-        _STL_INTERNAL_CHECK(_Has_zero_tail);
+        assert(_Has_zero_tail);
         _Assemble_floating_point_zero(_Fp_string._Myis_negative, _Value);
         return {_Next, std::errc{}};
     }
@@ -1997,7 +1997,7 @@ template <class _Floating>
     const char* const _First, const char* const _Last, _Floating& _Value, const chars_format _Fmt) noexcept {
     ms_verify_range(_First, _Last);
 
-    _STL_ASSERT(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
+    MSCHARCONF_ASSERT_MSG(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
                     || _Fmt == chars_format::hex,
         "invalid format in from_chars()");
 
@@ -2226,7 +2226,7 @@ template <class _Floating>
     // * Print the leading hexit, then mask it away.
     {
         const uint32_t _Nibble = static_cast<uint32_t>(_Adjusted_mantissa >> _Adjusted_explicit_bits);
-        _STL_INTERNAL_CHECK(_Nibble < 3);
+        assert(_Nibble < 3);
         const char _Leading_hexit = static_cast<char>('0' + _Nibble);
 
         *_First++ = _Leading_hexit;
@@ -2245,12 +2245,12 @@ template <class _Floating>
         int32_t _Number_of_bits_remaining = _Adjusted_explicit_bits; // 24 for float, 52 for double
 
         for (;;) {
-            _STL_INTERNAL_CHECK(_Number_of_bits_remaining >= 4);
-            _STL_INTERNAL_CHECK(_Number_of_bits_remaining % 4 == 0);
+            assert(_Number_of_bits_remaining >= 4);
+            assert(_Number_of_bits_remaining % 4 == 0);
             _Number_of_bits_remaining -= 4;
 
             const uint32_t _Nibble = static_cast<uint32_t>(_Adjusted_mantissa >> _Number_of_bits_remaining);
-            _STL_INTERNAL_CHECK(_Nibble < 16);
+            assert(_Nibble < 16);
             const char _Hexit = _Charconv_digits[_Nibble];
 
             *_First++ = _Hexit;
@@ -2371,12 +2371,12 @@ template <class _Floating>
         // '0' hexits, the same condition works (as we print the final hexit and mask it away); we don't need to test
         // _Number_of_bits_remaining.
         do {
-            _STL_INTERNAL_CHECK(_Number_of_bits_remaining >= 4);
-            _STL_INTERNAL_CHECK(_Number_of_bits_remaining % 4 == 0);
+            assert(_Number_of_bits_remaining >= 4);
+            assert(_Number_of_bits_remaining % 4 == 0);
             _Number_of_bits_remaining -= 4;
 
             const uint32_t _Nibble = static_cast<uint32_t>(_Adjusted_mantissa >> _Number_of_bits_remaining);
-            _STL_INTERNAL_CHECK(_Nibble < 16);
+            assert(_Nibble < 16);
             const char _Hexit = _Charconv_digits[_Nibble];
 
             if (_First == _Last) {
@@ -2895,13 +2895,13 @@ template <class _Floating>
         _Effective_precision = (std:: min)(_Precision - (_Scientific_exponent_X + 1), _Max_fixed_precision);
         const to_chars_result _Buf_result =
             _Floating_to_chars_fixed_precision(_Buffer, std:: end(_Buffer), _Value, _Effective_precision);
-        _STL_INTERNAL_CHECK(_Buf_result.ec == std::errc{});
+        assert(_Buf_result.ec == std::errc{});
         _Significand_last = _Buf_result.ptr;
     } else {
         _Effective_precision = (std:: min)(_Precision - 1, _Max_scientific_precision);
         const to_chars_result _Buf_result =
             _Floating_to_chars_scientific_precision(_Buffer, std:: end(_Buffer), _Value, _Effective_precision);
-        _STL_INTERNAL_CHECK(_Buf_result.ec == std::errc{});
+        assert(_Buf_result.ec == std::errc{});
         _Significand_last = std:: find(_Buffer, _Buf_result.ptr, 'e');
         _Exponent_first   = _Significand_last;
         _Exponent_last    = _Buf_result.ptr;
@@ -2947,9 +2947,9 @@ template <_Floating_to_chars_overload _Overload, class _Floating>
     ms_verify_range(_First, _Last);
 
     if constexpr (_Overload == _Floating_to_chars_overload::_Plain) {
-        _STL_INTERNAL_CHECK(_Fmt == chars_format{}); // plain overload must pass chars_format{} internally
+        assert(_Fmt == chars_format{}); // plain overload must pass chars_format{} internally
     } else {
-        _STL_ASSERT(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
+        MSCHARCONF_ASSERT_MSG(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
                         || _Fmt == chars_format::hex,
             "invalid format in to_chars()");
     }

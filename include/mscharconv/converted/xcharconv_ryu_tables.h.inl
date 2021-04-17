@@ -40,8 +40,8 @@
 
 //~ #include <cstdint>
 
-#if !_HAS_CXX17
-//~ #error The contents of <charconv> are only available with C++17. (Also, you should not include this internal header.)
+#if 0 //~#if !_HAS_CXX17
+#error The contents of <charconv> are only available with C++17. (Also, you should not include this internal header.)
 #endif // !_HAS_CXX17
 
 //~ #pragma pack(push, _CRT_PACKING)

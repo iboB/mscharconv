@@ -46,8 +46,8 @@
 //~ #include <intrin0.h> // for _umul128() and __shiftright128()
 #endif // _M_X64
 
-#if !_HAS_CXX17
-//~ #error The contents of <charconv> are only available with C++17. (Also, you should not include this internal header.)
+#if 0 //~#if !_HAS_CXX17
+#error The contents of <charconv> are only available with C++17. (Also, you should not include this internal header.)
 #endif // !_HAS_CXX17
 
 //~ #pragma pack(push, _CRT_PACKING)
@@ -70,7 +70,7 @@
   // Function precondition: __v is not a 10-digit number.
   // (f2s: 9 digits are sufficient for round-tripping.)
   // (d2fixed: We print 9-digit blocks.)
-  _STL_INTERNAL_CHECK(__v < 1000000000);
+  assert(__v < 1000000000);
   if (__v >= 100000000) { return 9; }
   if (__v >= 10000000) { return 8; }
   if (__v >= 1000000) { return 7; }
@@ -87,24 +87,24 @@
   // This approximation works up to the point that the multiplication overflows at __e = 3529.
   // If the multiplication were done in 64 bits, it would fail at 5^4004 which is just greater
   // than 2^9297.
-  _STL_INTERNAL_CHECK(__e >= 0);
-  _STL_INTERNAL_CHECK(__e <= 3528);
+  assert(__e >= 0);
+  assert(__e <= 3528);
   return static_cast<int32_t>(((static_cast<uint32_t>(__e) * 1217359) >> 19) + 1);
 }
 
 // Returns floor(log_10(2^__e)).
 [[nodiscard]] inline uint32_t __log10Pow2(const int32_t __e) {
   // The first value this approximation fails for is 2^1651 which is just greater than 10^297.
-  _STL_INTERNAL_CHECK(__e >= 0);
-  _STL_INTERNAL_CHECK(__e <= 1650);
+  assert(__e >= 0);
+  assert(__e <= 1650);
   return (static_cast<uint32_t>(__e) * 78913) >> 18;
 }
 
 // Returns floor(log_10(5^__e)).
 [[nodiscard]] inline uint32_t __log10Pow5(const int32_t __e) {
   // The first value this approximation fails for is 5^2621 which is just greater than 10^1832.
-  _STL_INTERNAL_CHECK(__e >= 0);
-  _STL_INTERNAL_CHECK(__e <= 2620);
+  assert(__e >= 0);
+  assert(__e <= 2620);
   return (static_cast<uint32_t>(__e) * 732923) >> 20;
 }
 
@@ -149,13 +149,13 @@ inline constexpr int __DOUBLE_POW5_BITCOUNT = 121;
   // (The shift value is in the range [49, 58].)
   // Check this here in case a future change requires larger shift
   // values. In this case this function needs to be adjusted.
-  _STL_INTERNAL_CHECK(__dist < 64);
+  assert(__dist < 64);
   return __shiftright128(__lo, __hi, static_cast<unsigned char>(__dist));
 }
 
 #else // ^^^ intrinsics available ^^^ / vvv intrinsics unavailable vvv
 
-[[nodiscard]] __forceinline uint64_t __ryu_umul128(const uint64_t __a, const uint64_t __b, uint64_t* const __productHi) {
+[[nodiscard]] MSCHARCONV_FORCE_INLINE uint64_t __ryu_umul128(const uint64_t __a, const uint64_t __b, uint64_t* const __productHi) {
   // TRANSITION, VSO-634761
   // The casts here help MSVC to avoid calls to the __allmul library function.
   const uint32_t __aLo = static_cast<uint32_t>(__a);
@@ -188,13 +188,13 @@ inline constexpr int __DOUBLE_POW5_BITCOUNT = 121;
 
 [[nodiscard]] inline uint64_t __ryu_shiftright128(const uint64_t __lo, const uint64_t __hi, const uint32_t __dist) {
   // We don't need to handle the case __dist >= 64 here (see above).
-  _STL_INTERNAL_CHECK(__dist < 64);
+  assert(__dist < 64);
 #ifdef MSCHARCONV_64_BIT
-  _STL_INTERNAL_CHECK(__dist > 0);
+  assert(__dist > 0);
   return (__hi << (64 - __dist)) | (__lo >> __dist);
 #else // ^^^ 64-bit ^^^ / vvv 32-bit vvv
   // Avoid a 64-bit shift by taking advantage of the range of shift values.
-  _STL_INTERNAL_CHECK(__dist >= 32);
+  assert(__dist >= 32);
   return (__hi << (64 - __dist)) | (static_cast<uint32_t>(__lo >> 32) >> (__dist - 32));
 #endif // ^^^ 32-bit ^^^
 }
@@ -289,7 +289,7 @@ inline constexpr int __DOUBLE_POW5_BITCOUNT = 121;
 [[nodiscard]] inline uint32_t __pow5Factor(uint64_t __value) {
   uint32_t __count = 0;
   for (;;) {
-    _STL_INTERNAL_CHECK(__value != 0);
+    assert(__value != 0);
     const uint64_t __q = __div5(__value);
     const uint32_t __r = static_cast<uint32_t>(__value) - 5 * static_cast<uint32_t>(__q);
     if (__r != 0) {
@@ -309,8 +309,8 @@ inline constexpr int __DOUBLE_POW5_BITCOUNT = 121;
 
 // Returns true if __value is divisible by 2^__p.
 [[nodiscard]] inline bool __multipleOfPowerOf2(const uint64_t __value, const uint32_t __p) {
-  _STL_INTERNAL_CHECK(__value != 0);
-  _STL_INTERNAL_CHECK(__p < 64);
+  assert(__value != 0);
+  assert(__p < 64);
   // return __builtin_ctzll(__value) >= __p;
   return (__value & ((1ull << __p) - 1)) == 0;
 }
@@ -368,8 +368,8 @@ inline constexpr int __POW10_ADDITIONAL_BITS = 120;
   const uint64_t __s1low = __low2 + __high1 + __c1; // 128
   const uint32_t __c2 = __s1low < __low2; // __high1 + __c1 can't overflow, so compare against __low2
   const uint64_t __s1high = __high2 + __c2;         // 192
-  _STL_INTERNAL_CHECK(__j >= 128);
-  _STL_INTERNAL_CHECK(__j <= 180);
+  assert(__j >= 128);
+  assert(__j <= 180);
 #ifdef _M_X64
   const uint32_t __dist = static_cast<uint32_t>(__j - 128); // __dist: [0, 52]
   const uint64_t __shiftedhigh = __s1high >> __dist;
@@ -969,7 +969,7 @@ inline constexpr uint64_t __FLOAT_POW5_SPLIT[47] = {
 [[nodiscard]] inline uint32_t __pow5Factor(uint32_t __value) {
   uint32_t __count = 0;
   for (;;) {
-    _STL_INTERNAL_CHECK(__value != 0);
+    assert(__value != 0);
     const uint32_t __q = __value / 5;
     const uint32_t __r = __value % 5;
     if (__r != 0) {
@@ -988,14 +988,14 @@ inline constexpr uint64_t __FLOAT_POW5_SPLIT[47] = {
 
 // Returns true if __value is divisible by 2^__p.
 [[nodiscard]] inline bool __multipleOfPowerOf2(const uint32_t __value, const uint32_t __p) {
-  _STL_INTERNAL_CHECK(__value != 0);
-  _STL_INTERNAL_CHECK(__p < 32);
+  assert(__value != 0);
+  assert(__p < 32);
   // return __builtin_ctz(__value) >= __p;
   return (__value & ((1u << __p) - 1)) == 0;
 }
 
 [[nodiscard]] inline uint32_t __mulShift(const uint32_t __m, const uint64_t __factor, const int32_t __shift) {
-  _STL_INTERNAL_CHECK(__shift > 32);
+  assert(__shift > 32);
 
   // The casts here help MSVC to avoid calls to the __allmul library
   // function.
@@ -1017,7 +1017,7 @@ inline constexpr uint64_t __FLOAT_POW5_SPLIT[47] = {
 #else // ^^^ 32-bit ^^^ / vvv 64-bit vvv
   const uint64_t __sum = (__bits0 >> 32) + __bits1;
   const uint64_t __shiftedSum = __sum >> (__shift - 32);
-  _STL_INTERNAL_CHECK(__shiftedSum <= UINT32_MAX);
+  assert(__shiftedSum <= UINT32_MAX);
   return static_cast<uint32_t>(__shiftedSum);
 #endif // ^^^ 64-bit ^^^
 }
@@ -1192,8 +1192,8 @@ struct __floating_decimal_32 {
   // Performance note: Long division appears to be faster than losslessly widening float to double and calling
   // __d2fixed_buffered_n(). If __f2fixed_buffered_n() is implemented, it might be faster than long division.
 
-  _STL_INTERNAL_CHECK(_Exponent2 > 0);
-  _STL_INTERNAL_CHECK(_Exponent2 <= 104); // because __ieeeExponent <= 254
+  assert(_Exponent2 > 0);
+  assert(_Exponent2 <= 104); // because __ieeeExponent <= 254
 
   // Manually represent _Mantissa2 * 2^_Exponent2 as a large integer. _Mantissa2 is always 24 bits
   // (due to the implicit bit), while _Exponent2 indicates a shift of at most 104 bits.
@@ -1211,7 +1211,7 @@ struct __floating_decimal_32 {
 
   // _Maxidx is the index of the most significant nonzero element.
   uint32_t _Maxidx = ((24 + static_cast<uint32_t>(_Exponent2) + 31) / 32) - 1;
-  _STL_INTERNAL_CHECK(_Maxidx < _Data_size);
+  assert(_Maxidx < _Data_size);
 
   const uint32_t _Bit_shift = static_cast<uint32_t>(_Exponent2) % 32;
   if (_Bit_shift <= 8) { // _Mantissa2's 24 bits don't cross an element boundary
@@ -1271,9 +1271,9 @@ struct __floating_decimal_32 {
     }
   }
 
-  _STL_INTERNAL_CHECK(_Data[0] != 0);
+  assert(_Data[0] != 0);
   for (uint32_t _Idx = 1; _Idx < _Data_size; ++_Idx) {
-    _STL_INTERNAL_CHECK(_Data[_Idx] == 0);
+    assert(_Data[_Idx] == 0);
   }
 
   const uint32_t _Data_olength = _Data[0] >= 1000000000 ? 10 : __decimalLength9(_Data[0]);
@@ -1416,7 +1416,7 @@ struct __floating_decimal_32 {
         static constexpr uint32_t _Max_shifted_mantissa[11] = {
           16777215, 3355443, 671088, 134217, 26843, 5368, 1073, 214, 42, 8, 1 };
 
-        unsigned long _Trailing_zero_bits;
+        ulong32 _Trailing_zero_bits;
         (void) _BitScanForward(&_Trailing_zero_bits, __v.__mantissa); // __v.__mantissa is guaranteed nonzero
         const uint32_t _Shifted_mantissa = __v.__mantissa >> _Trailing_zero_bits;
         _Can_use_ryu = _Shifted_mantissa <= _Max_shifted_mantissa[_Ryu_exponent];
@@ -1659,7 +1659,7 @@ struct __floating_decimal_32 {
 
 #else // ^^^ intrinsics available ^^^ / vvv intrinsics unavailable vvv
 
-[[nodiscard]] __forceinline uint64_t __mulShiftAll(uint64_t __m, const uint64_t* const __mul, const int32_t __j,
+[[nodiscard]] MSCHARCONV_FORCE_INLINE uint64_t __mulShiftAll(uint64_t __m, const uint64_t* const __mul, const int32_t __j,
   uint64_t* const __vp, uint64_t* const __vm, const uint32_t __mmShift) { // TRANSITION, VSO-634761
   __m <<= 1;
   // __m is maximum 55 bits
@@ -1699,7 +1699,7 @@ struct __floating_decimal_32 {
   // The average output length is 16.38 digits, so we check high-to-low.
   // Function precondition: __v is not an 18, 19, or 20-digit number.
   // (17 digits are sufficient for round-tripping.)
-  _STL_INTERNAL_CHECK(__v < 100000000000000000u);
+  assert(__v < 100000000000000000u);
   if (__v >= 10000000000000000u) { return 17; }
   if (__v >= 1000000000000000u) { return 16; }
   if (__v >= 100000000000000u) { return 15; }
@@ -2022,7 +2022,7 @@ struct __floating_decimal_64 {
           2882303761517u, 576460752303u, 115292150460u, 23058430092u, 4611686018u, 922337203u, 184467440u,
           36893488u, 7378697u, 1475739u, 295147u, 59029u, 11805u, 2361u, 472u, 94u, 18u, 3u };
 
-        unsigned long _Trailing_zero_bits;
+        ulong32 _Trailing_zero_bits;
 #ifdef MSCHARCONV_64_BIT
         (void) _BitScanForward64(&_Trailing_zero_bits, __v.__mantissa); // __v.__mantissa is guaranteed nonzero
 #else // ^^^ 64-bit ^^^ / vvv 32-bit vvv

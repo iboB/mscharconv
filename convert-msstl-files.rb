@@ -12,7 +12,7 @@ def comment_line(line)
 end
 
 def convert_line(line)
-  ret = if line =~ /_Index|_Chunk|_Truncated/
+  ret = if line !~ /_chars\(/
     line.gsub('unsigned long', 'ulong32')
   else
     line
@@ -24,29 +24,27 @@ def convert_line(line)
     gsub('errc', 'std::errc').
     gsub('_WIN64', 'MSCHARCONV_64_BIT').
     gsub('_Adl_verify_range', 'ms_verify_range').
+    gsub('_STL_INTERNAL_CHECK', 'assert').
+    gsub('_STL_ASSERT', 'MSCHARCONF_ASSERT_MSG').
     gsub('make_unsigned_t', 'std::make_unsigned_t').
     gsub('is_signed_v', 'std::is_signed_v').
     gsub('conditional_t', 'std::conditional_t').
     gsub('is_same_v', 'std::is_same_v').
     gsub('_Bit_cast', 'bit_cast').
+    gsub('__forceinline', 'MSCHARCONV_FORCE_INLINE').
     gsub(' less{}', ' std::less{}')
 end
 
 def convert(filename)
   out = ''
-  commenting_if = false
   commenting_struct = false
   File.readlines(File.join(INC, filename)).each do |line|
     out += case line
     when /^#pragma/, /^#include/, /^#undef/, /^_S/, /_STL_COMPILER_PREPROCESSOR/, /_BITMASK_OPS/
       comment_line line
     when /^#if !_HAS_CXX17/, /^#if _HAS_CXX20/
-      commenting_if = true
-      line
+      '#if 0 //~' + line
     when /^#endif/, /^#else/
-      if commenting_if
-        commenting_if = false
-      end
       line
     when /struct from_chars_result \{/
       commenting_struct = true
@@ -59,7 +57,7 @@ def convert(filename)
         convert_line line
       end
     else
-      if commenting_if || commenting_struct
+      if commenting_struct
         comment_line line
       else
         convert_line line
@@ -67,7 +65,7 @@ def convert(filename)
     end
   end
 
-  File.write(File.join(OUT, filename + '.inl'), out)
+  File.write(File.join(OUT, filename + '.inl'), out.encode(out.encoding, universal_newline: true))
 end
 
 convert('xbit_ops.h')
