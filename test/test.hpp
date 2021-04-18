@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cmath>
 
+// a bare bones unit testing library
+
 extern int performed;
 extern int failed;
 
