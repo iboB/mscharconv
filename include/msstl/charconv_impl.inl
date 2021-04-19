@@ -38,7 +38,10 @@ To bit_cast(const From& val) noexcept {
 #endif
 }
 
-#if !defined(_MSC_VER)
+// intrinsics
+#if defined(_WIN32)
+#   include <intrin.h>
+#else
 inline char _BitScanForward(uint32_t* bit, uint32_t n) {
     if (!n) return 0;
     *bit = uint32_t(__builtin_ctz(n));

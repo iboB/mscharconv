@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 #pragma once
 
-#if defined(_MSC_VER)
+#if defined(_WIN32)
 #   define SYMBOL_EXPORT __declspec(dllexport)
 #   define SYMBOL_IMPORT __declspec(dllimport)
 #else
