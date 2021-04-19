@@ -2,7 +2,7 @@
 
 `<charconv>` from [Microsoft STL](https://github.com/microsoft/STL), but multi-platform.
 
-Tested with MSVC, gcc, and clang on Windows and Linux (will likely work on other platforms supported by any of these compilers)
+Tested with MSVC, gcc, and clang on Windows, Linux, and macOS (will likely work on other platforms supported by any of these compilers)
 
 ## Usage
 
@@ -48,7 +48,7 @@ The utility functions are:
 
 For the basic usage of the library one needs to include `charconv.hpp` which is quite big. It contains a lot of code and huge helper arrays. If you include charconv in many places of your code, it may lead to long compilation times. The advanced usage of the library allows the functions to be compiled separately and only once per project. To enable this, instead of including `charconv.hpp` include `charconv_fwd.hpp` and in a single place of your code define `MSCHARCONV_IMPLEMENT` and then include `charconv.hpp`.
 
-Additionally if you want to provide a shared library interface to the functions, define `MSCCHARCONV_API` to your import/export symbols, before including `charconv_fwd.hpp`
+Additionally if you want to provide a shared library interface to the functions, define `MSCHARCONV_API` to your import/export symbols, before including `charconv_fwd.hpp`
 
 ## Development
 
