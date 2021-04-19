@@ -64,11 +64,27 @@ inline char _BitScanReverse64(uint32_t* bit, uint64_t n) {
 }
 #endif
 
+#if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 10
+#define MSCHARCONV_DISABLE_WARNINGS \
+     _Pragma("GCC diagnostic push") \
+     _Pragma("GCC diagnostic ignored \"-Wunused-but-set-variable\"") \
+     _Pragma("GCC diagnostic ignored \"-Wunused-but-set-parameter\"") \
+    /*preserve this line*/
+#define MSCHARCONV_REENABLE_WARNINGS _Pragma("GCC diagnostic pop")
+#else
+#define MSCHARCONV_DISABLE_WARNINGS
+#define MSCHARCONV_REENABLE_WARNINGS
+#endif
+
+MSCHARCONV_DISABLE_WARNINGS
+
 #include "converted/m_floating_type_traits.inl"
 #include "converted/xbit_ops.h.inl"
 #include "converted/xcharconv_ryu_tables.h.inl"
 #include "converted/xcharconv_ryu.h.inl"
 #include "converted/charconv.inl"
+
+MSCHARCONV_REENABLE_WARNINGS
 
 } // namespace impl
 
