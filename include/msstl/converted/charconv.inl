@@ -37,8 +37,8 @@ static_assert(std:: size(_Charconv_digits) == 36);
 template <class _RawTy>
 [[nodiscard]] to_chars_result _Integer_to_chars(
     char* _First, char* const _Last, const _RawTy _Raw_value, const int _Base) noexcept {
-    ms_verify_range(_First, _Last);
-    MSCHARCONF_ASSERT_MSG(_Base >= 2 && _Base <= 36, "invalid base in to_chars()");
+    MSCHARCONV_VERIFY_RANGE(_First, _Last);
+    MSCHARCONV_ASSERT_MSG(_Base >= 2 && _Base <= 36, "invalid base in to_chars()");
 
     using _Unsigned = std::make_unsigned_t<_RawTy>;
 
@@ -237,8 +237,8 @@ to_chars_result to_chars(char* _First, char* _Last, bool _Value, int _Base = 10)
 template <class _RawTy>
 [[nodiscard]] from_chars_result _Integer_from_chars(
     const char* const _First, const char* const _Last, _RawTy& _Raw_value, const int _Base) noexcept {
-    ms_verify_range(_First, _Last);
-    MSCHARCONF_ASSERT_MSG(_Base >= 2 && _Base <= 36, "invalid base in from_chars()");
+    MSCHARCONV_VERIFY_RANGE(_First, _Last);
+    MSCHARCONV_ASSERT_MSG(_Base >= 2 && _Base <= 36, "invalid base in from_chars()");
 
     bool _Minus_sign = false;
 
@@ -1995,9 +1995,9 @@ template <class _Floating>
 template <class _Floating>
 [[nodiscard]] from_chars_result _Floating_from_chars(
     const char* const _First, const char* const _Last, _Floating& _Value, const chars_format _Fmt) noexcept {
-    ms_verify_range(_First, _Last);
+    MSCHARCONV_VERIFY_RANGE(_First, _Last);
 
-    MSCHARCONF_ASSERT_MSG(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
+    MSCHARCONV_ASSERT_MSG(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
                     || _Fmt == chars_format::hex,
         "invalid format in from_chars()");
 
@@ -2944,12 +2944,12 @@ enum class _Floating_to_chars_overload { _Plain, _Format_only, _Format_precision
 template <_Floating_to_chars_overload _Overload, class _Floating>
 [[nodiscard]] to_chars_result _Floating_to_chars(
     char* _First, char* const _Last, _Floating _Value, const chars_format _Fmt, const int _Precision) noexcept {
-    ms_verify_range(_First, _Last);
+    MSCHARCONV_VERIFY_RANGE(_First, _Last);
 
     if constexpr (_Overload == _Floating_to_chars_overload::_Plain) {
         assert(_Fmt == chars_format{}); // plain overload must pass chars_format{} internally
     } else {
-        MSCHARCONF_ASSERT_MSG(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
+        MSCHARCONV_ASSERT_MSG(_Fmt == chars_format::general || _Fmt == chars_format::scientific || _Fmt == chars_format::fixed
                         || _Fmt == chars_format::hex,
             "invalid format in to_chars()");
     }

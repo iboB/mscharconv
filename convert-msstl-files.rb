@@ -2,7 +2,7 @@ require 'fileutils'
 
 MSSTL = ARGV[0] || '../STL'
 INC = File.join(MSSTL, 'stl', 'inc')
-OUT = 'include/mscharconv/converted'
+OUT = 'include/msstl/converted'
 FileUtils.mkdir_p OUT
 
 raise "#{MSSTL} is not recognized as clone of https://github.com/microsoft/STL" if !File.directory?(INC)
@@ -23,9 +23,9 @@ def convert_line(line)
     gsub('_NODISCARD', '[[nodiscard]]').
     gsub('errc', 'std::errc').
     gsub('_WIN64', 'MSCHARCONV_64_BIT').
-    gsub('_Adl_verify_range', 'ms_verify_range').
+    gsub('_Adl_verify_range', 'MSCHARCONV_VERIFY_RANGE').
     gsub('_STL_INTERNAL_CHECK', 'assert').
-    gsub('_STL_ASSERT', 'MSCHARCONF_ASSERT_MSG').
+    gsub('_STL_ASSERT', 'MSCHARCONV_ASSERT_MSG').
     gsub('make_unsigned_t', 'std::make_unsigned_t').
     gsub('is_signed_v', 'std::is_signed_v').
     gsub('conditional_t', 'std::conditional_t').

@@ -23,9 +23,9 @@ using ulong32 = std::conditional_t<sizeof(unsigned long) == 4, unsigned long, ui
 #   define MSCHARCONV_FORCE_INLINE __attribute__((always_inline)) inline
 #endif
 
-#define MSCHARCONF_ASSERT_MSG(cnd, msg) assert(cnd)
+#define MSCHARCONV_ASSERT_MSG(cnd, msg) assert(cnd)
 
-inline void ms_verify_range(const char* first, const char* last) { assert(first <= last); }
+#define MSCHARCONV_VERIFY_RANGE(first, last) { assert(first <= last); }
 
 template <class To, class From>
 To bit_cast(const From& val) noexcept {
