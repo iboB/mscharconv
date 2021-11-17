@@ -32,7 +32,8 @@ def convert_line(line)
     gsub('is_same_v', 'std::is_same_v').
     gsub('_Bit_cast', 'bit_cast').
     gsub('__forceinline', 'MSCHARCONV_FORCE_INLINE').
-    gsub(' less{}', ' std::less{}')
+    gsub(' less{}', ' std::less{}').
+    gsub(' pair<', ' std::pair<')
 end
 
 def convert(filename)
