@@ -43,24 +43,24 @@ To bit_cast(const From& val) noexcept {
 #if defined(_WIN32)
 #   include <intrin.h>
 #else
-inline char _BitScanForward(uint32_t* bit, uint32_t n) {
+inline char _BitScanForward(ulong32* bit, uint32_t n) {
     if (!n) return 0;
-    *bit = uint32_t(__builtin_ctz(n));
+    *bit = ulong32(__builtin_ctz(n));
     return 1;
 }
-inline char _BitScanForward64(uint32_t* bit, uint64_t n) {
+inline char _BitScanForward64(ulong32* bit, uint64_t n) {
     if (!n) return 0;
-    *bit = uint32_t(__builtin_ctzl(n));
+    *bit = ulong32(__builtin_ctzll(n));
     return 1;
 }
-inline char _BitScanReverse(uint32_t* bit, uint32_t n) {
+inline char _BitScanReverse(ulong32* bit, uint32_t n) {
     if (!n) return 0;
-    *bit = uint32_t(32 - 1 - __builtin_clz(n));
+    *bit = ulong32(32 - 1 - __builtin_clz(n));
     return 1;
 }
-inline char _BitScanReverse64(uint32_t* bit, uint64_t n) {
+inline char _BitScanReverse64(ulong32* bit, uint64_t n) {
     if (!n) return 0;
-    *bit = uint32_t(64 - 1 - __builtin_clzl(n));
+    *bit = ulong32(64 - 1 - __builtin_clzll(n));
     return 1;
 }
 #endif
