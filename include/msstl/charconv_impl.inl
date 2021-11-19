@@ -70,6 +70,15 @@ inline char _BitScanReverse64(ulong32* bit, uint64_t n) {
      _Pragma("GCC diagnostic push") \
      _Pragma("GCC diagnostic ignored \"-Wunused-but-set-variable\"") \
      _Pragma("GCC diagnostic ignored \"-Wunused-but-set-parameter\"") \
+     _Pragma("GCC diagnostic ignored \"-Wconversion\"") \
+     _Pragma("GCC diagnostic ignored \"-Wsign-conversion\"") \
+    /*preserve this line*/
+#define MSCHARCONV_REENABLE_WARNINGS _Pragma("GCC diagnostic pop")
+#elif defined(__GNUC__)
+#define MSCHARCONV_DISABLE_WARNINGS \
+     _Pragma("GCC diagnostic push") \
+     _Pragma("GCC diagnostic ignored \"-Wconversion\"") \
+     _Pragma("GCC diagnostic ignored \"-Wsign-conversion\"") \
     /*preserve this line*/
 #define MSCHARCONV_REENABLE_WARNINGS _Pragma("GCC diagnostic pop")
 #else
