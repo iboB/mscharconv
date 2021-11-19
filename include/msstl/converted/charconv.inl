@@ -512,7 +512,7 @@ struct _Big_integer_flt {
         const uint32_t _Msb_bits = _Bit_shift;
         const uint32_t _Lsb_bits = _Big_integer_flt::_Element_bits - _Msb_bits;
 
-        const uint32_t _Lsb_mask = (1UL << _Lsb_bits) - 1UL;
+        const uint32_t _Lsb_mask = (1U << _Lsb_bits) - 1U;
         const uint32_t _Msb_mask = ~_Lsb_mask;
 
         // If _Unit_shift == 0, this will wraparound, which is okay.
