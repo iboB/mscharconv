@@ -31,7 +31,7 @@
 //~ _STD_BEGIN
 inline constexpr char _Charconv_digits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
     'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-static_assert(std:: size(_Charconv_digits) == 36);
+//~ _STL_INTERNAL_STATIC_ASSERT(_STD size(_Charconv_digits) == 36);
 
 template <class _RawTy>
 [[nodiscard]] to_chars_result _Integer_to_chars(
@@ -208,7 +208,7 @@ to_chars_result to_chars(char* _First, char* _Last, bool _Value, int _Base = 10)
 //~     const char* ptr;
 //~     errc ec;
 #if 0 //~#if _HAS_CXX20
-//~     _NODISCARD friend bool operator==(const from_chars_result&, const from_chars_result&) = default;
+//~     _NODISCARD_FRIEND bool operator==(const from_chars_result&, const from_chars_result&) = default;
 #endif // _HAS_CXX20
 //~ };
 
@@ -433,32 +433,6 @@ struct _Big_integer_flt {
     _Big_integer_flt _Xval{};
     _Xval._Mydata[0] = 1;
     _Xval._Myused    = 1;
-    return _Xval;
-}
-
-[[nodiscard]] inline _Big_integer_flt _Make_big_integer_flt_u32(const uint32_t _Value) noexcept {
-    _Big_integer_flt _Xval{};
-    _Xval._Mydata[0] = _Value;
-    _Xval._Myused    = 1;
-    return _Xval;
-}
-
-[[nodiscard]] inline _Big_integer_flt _Make_big_integer_flt_u64(const uint64_t _Value) noexcept {
-    _Big_integer_flt _Xval{};
-    _Xval._Mydata[0] = static_cast<uint32_t>(_Value);
-    _Xval._Mydata[1] = static_cast<uint32_t>(_Value >> 32);
-    _Xval._Myused    = _Xval._Mydata[1] == 0 ? 1u : 2u;
-    return _Xval;
-}
-
-[[nodiscard]] inline _Big_integer_flt _Make_big_integer_flt_power_of_two(const uint32_t _Power) noexcept {
-    const uint32_t _Element_index = _Power / _Big_integer_flt::_Element_bits;
-    const uint32_t _Bit_index     = _Power % _Big_integer_flt::_Element_bits;
-
-    _Big_integer_flt _Xval{};
-    std:: memset(_Xval._Mydata, 0, _Element_index * sizeof(uint32_t));
-    _Xval._Mydata[_Element_index] = 1u << _Bit_index;
-    _Xval._Myused                 = _Element_index + 1;
     return _Xval;
 }
 
@@ -794,7 +768,7 @@ struct _Big_integer_flt {
 
     for (uint32_t _Large_power = _Power / 10; _Large_power != 0;) {
         const uint32_t _Current_power =
-            (std:: min) (_Large_power, static_cast<uint32_t>(std:: size(_Large_power_indices)));
+            (std:: min)(_Large_power, static_cast<uint32_t>(std:: size(_Large_power_indices)));
 
         const _Unpack_index& _Index = _Large_power_indices[_Current_power - 1];
         _Big_integer_flt _Multiplier{};
@@ -932,7 +906,15 @@ int main() {
 
         _Numerator._Mydata[1] = static_cast<uint32_t>(_Uu >> 32);
         _Numerator._Mydata[0] = static_cast<uint32_t>(_Uu);
-        _Numerator._Myused    = _Numerator._Mydata[1] > 0 ? 2u : 1u;
+
+        if (_Numerator._Mydata[1] > 0) {
+            _Numerator._Myused = 2u;
+        } else if (_Numerator._Mydata[0] > 0) {
+            _Numerator._Myused = 1u;
+        } else {
+            _Numerator._Myused = 0u;
+        }
+
         return _Quotient;
     }
 
@@ -1050,10 +1032,6 @@ int main() {
     }
 
     // Trim the remainder:
-    for (uint32_t _Ix = _Max_numerator_element_index + 1; _Ix < _Numerator._Myused; ++_Ix) {
-        _Numerator._Mydata[_Ix] = 0;
-    }
-
     uint32_t _Used = _Max_numerator_element_index + 1;
 
     while (_Used != 0 && _Numerator._Mydata[_Used - 1] == 0) {
@@ -1477,8 +1455,8 @@ template <class _FloatingType>
     // fractional part. If the exponent is positive, then the integer part consists of the first 'exponent' digits,
     // or all present digits if there are fewer digits. If the exponent is zero or negative, then the integer part
     // is empty. In either case, the remaining digits form the fractional part of the mantissa.
-    const uint32_t _Positive_exponent      = static_cast<uint32_t>((std:: max) (0, _Data._Myexponent));
-    const uint32_t _Integer_digits_present = (std:: min) (_Positive_exponent, _Data._Mymantissa_count);
+    const uint32_t _Positive_exponent      = static_cast<uint32_t>((std:: max)(0, _Data._Myexponent));
+    const uint32_t _Integer_digits_present = (std:: min)(_Positive_exponent, _Data._Mymantissa_count);
     const uint32_t _Integer_digits_missing = _Positive_exponent - _Integer_digits_present;
     const uint8_t* const _Integer_first    = _Data._Mymantissa;
     const uint8_t* const _Integer_last     = _Data._Mymantissa + _Integer_digits_present;
@@ -1737,7 +1715,7 @@ template <class _Floating>
     // For "03333.111", it is 4.
     // For "00000.111", it is 0.
     // For "00000.001", it is -2.
-    int _Exponent_adjustment = static_cast<int>((std:: min) (_Whole_end - _Leading_zero_end, _Maximum_adjustment));
+    int _Exponent_adjustment = static_cast<int>((std:: min)(_Whole_end - _Leading_zero_end, _Maximum_adjustment));
 
     // [_Whole_end, _Dot_end) will contain 0 or 1 '.' characters
     if (_Next != _Last && *_Next == '.') {
@@ -1753,7 +1731,7 @@ template <class _Floating>
         for (; _Next != _Last && *_Next == '0'; ++_Next) {
         }
 
-        _Exponent_adjustment = static_cast<int>((std:: max) (_Dot_end - _Next, _Minimum_adjustment));
+        _Exponent_adjustment = static_cast<int>((std:: max)(_Dot_end - _Next, _Minimum_adjustment));
     }
 
     // Scan the fractional part of the mantissa:
@@ -2838,7 +2816,7 @@ template <class _Floating>
         _Table_end   = _Table_begin + _Precision + 5;
     } else {
         _Table_begin = _Tables::_Ordinary_X_table;
-        _Table_end   = _Table_begin + (std:: min) (_Precision, _Tables::_Max_P) + 5;
+        _Table_end   = _Table_begin + (std:: min)(_Precision, _Tables::_Max_P) + 5;
     }
 
     // Profiling indicates that linear search is faster than binary search for small tables.
@@ -2885,13 +2863,13 @@ template <class _Floating>
     // Write into the local buffer.
     // Clamping _Effective_precision allows _Buffer to be as small as possible, and increases efficiency.
     if (_Use_fixed_notation) {
-        _Effective_precision = (std:: min) (_Precision - (_Scientific_exponent_X + 1), _Max_fixed_precision);
+        _Effective_precision = (std:: min)(_Precision - (_Scientific_exponent_X + 1), _Max_fixed_precision);
         const to_chars_result _Buf_result =
             _Floating_to_chars_fixed_precision(_Buffer, std:: end(_Buffer), _Value, _Effective_precision);
         assert(_Buf_result.ec == std::errc{});
         _Significand_last = _Buf_result.ptr;
     } else {
-        _Effective_precision = (std:: min) (_Precision - 1, _Max_scientific_precision);
+        _Effective_precision = (std:: min)(_Precision - 1, _Max_scientific_precision);
         const to_chars_result _Buf_result =
             _Floating_to_chars_scientific_precision(_Buffer, std:: end(_Buffer), _Value, _Effective_precision);
         assert(_Buf_result.ec == std::errc{});

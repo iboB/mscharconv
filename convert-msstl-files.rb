@@ -21,6 +21,8 @@ def convert_line(line)
   ret.
     gsub(/_STD|_CSTD/, 'std::').gsub('std:: to_chars', 'to_chars'). # we add std where needed but remove it from where its not needed
     gsub('_NODISCARD', '[[nodiscard]]').
+    gsub('_NODISCARD_FRIEND', '[[nodiscard]] friend').
+    gsub('_STL_INTERNAL_STATIC_ASSERT', 'static_assert').
     gsub('errc', 'std::errc').
     gsub('_WIN64', 'MSCHARCONV_64_BIT').
     gsub('_Adl_verify_range', 'MSCHARCONV_VERIFY_RANGE').
