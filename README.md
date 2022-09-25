@@ -8,7 +8,7 @@ Tested with MSVC, gcc, and clang on Windows, Linux, and macOS (will likely work 
 
 The library is header only. You can clone the repo or copy the contents of the include directory in your project.
 
-Alternatively you can use with CMake. The provided CMakeLists.txt defines an `INTERFACE` target `mscharconv`.
+Alternatively you can use with CMake. The provided CMakeLists.txt defines an `INTERFACE` target `mscharconv` and its alias `msstl::charconv`.
 
 To use the library in your code simply include `<msstl/charconv.hpp>` and use `to_chars` and `from_chars` from the namespace `msstl`.
 
