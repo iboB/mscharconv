@@ -33,8 +33,8 @@
 
 
 //~ #pragma once
-#ifndef _XCHARCONV_RYU_H
-#define _XCHARCONV_RYU_H
+//~ #ifndef _XCHARCONV_RYU_H
+//~ #define _XCHARCONV_RYU_H
 //~ #include <yvals_core.h>
 //~ #if _STL_COMPILER_PREPROCESSOR
 
@@ -1558,7 +1558,7 @@ template <class _CharT>
   return { _First + _Total_scientific_length, std::errc{} };
 }
 
-[[nodiscard]] inline to_chars_result _Convert_to_chars_result(const std::pair<char*, std::errc>& _Pair) {
+[[nodiscard]] inline to_chars_result _m_Convert_to_chars_result(const std::pair<char*, std::errc>& _Pair) {
     return {_Pair.first, _Pair.second};
 }
 
@@ -2361,9 +2361,9 @@ template <class _Floating>
 [[nodiscard]] to_chars_result _Floating_to_chars_ryu(
     char* const _First, char* const _Last, const _Floating _Value, const chars_format _Fmt) noexcept {
     if constexpr (std::is_same_v<_Floating, float>) {
-        return _Convert_to_chars_result(__f2s_buffered_n(_First, _Last, _Value, _Fmt));
+        return _m_Convert_to_chars_result(__f2s_buffered_n(_First, _Last, _Value, _Fmt));
     } else {
-        return _Convert_to_chars_result(__d2s_buffered_n(_First, _Last, _Value, _Fmt));
+        return _m_Convert_to_chars_result(__d2s_buffered_n(_First, _Last, _Value, _Fmt));
     }
 }
 
@@ -2406,7 +2406,7 @@ template <class _Floating>
         return {_Last, std::errc::value_too_large};
     }
 
-    return _Convert_to_chars_result(__d2fixed_buffered_n(_First, _Last, _Value, static_cast<uint32_t>(_Precision)));
+    return _m_Convert_to_chars_result(__d2fixed_buffered_n(_First, _Last, _Value, static_cast<uint32_t>(_Precision)));
 }
 
 //~ _STD_END
@@ -2420,4 +2420,4 @@ template <class _Floating>
 //~ #pragma pack(pop)
 
 //~ #endif // _STL_COMPILER_PREPROCESSOR
-#endif // _XCHARCONV_RYU_H
+//~ #endif // _XCHARCONV_RYU_H

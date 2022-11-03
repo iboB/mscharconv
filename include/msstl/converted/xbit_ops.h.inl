@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 //~ #pragma once
-#ifndef _XBIT_OPS_H
-#define _XBIT_OPS_H
+//~ #ifndef _XBIT_OPS_H
+//~ #define _XBIT_OPS_H
 //~ #include <yvals.h>
 //~ #if _STL_COMPILER_PREPROCESSOR
 
@@ -93,4 +93,4 @@
 //~ #pragma warning(pop)
 //~ #pragma pack(pop)
 //~ #endif // _STL_COMPILER_PREPROCESSOR
-#endif // _XBIT_OPS_H
+//~ #endif // _XBIT_OPS_H

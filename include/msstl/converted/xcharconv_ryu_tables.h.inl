@@ -33,8 +33,8 @@
 
 
 //~ #pragma once
-#ifndef _XCHARCONV_RYU_TABLES_H
-#define _XCHARCONV_RYU_TABLES_H
+//~ #ifndef _XCHARCONV_RYU_TABLES_H
+//~ #define _XCHARCONV_RYU_TABLES_H
 //~ #include <yvals_core.h>
 //~ #if _STL_COMPILER_PREPROCESSOR
 
@@ -4825,4 +4825,4 @@ inline constexpr uint64_t __POW10_SPLIT_2[3133][3] = {
 //~ #pragma pack(pop)
 
 //~ #endif // _STL_COMPILER_PREPROCESSOR
-#endif // _XCHARCONV_RYU_TABLES_H
+//~ #endif // _XCHARCONV_RYU_TABLES_H

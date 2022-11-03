@@ -1,5 +1,6 @@
 // Copyright (c) 2021 Borislav Stanimirov
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+#include <charconv> // test that we don't clash with existing charconv
 #include "test_charconv.hpp"
 #include <msstl/util.hpp>
 #include "test.hpp"

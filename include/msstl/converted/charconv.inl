@@ -4,8 +4,8 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 //~ #pragma once
-#ifndef _CHARCONV_
-#define _CHARCONV_
+//~ #ifndef _CHARCONV_
+//~ #define _CHARCONV_
 //~ #include <yvals.h>
 //~ #if _STL_COMPILER_PREPROCESSOR
 
@@ -3045,4 +3045,4 @@ inline to_chars_result to_chars(char* const _First, char* const _Last, const lon
 //~ #pragma pack(pop)
 #endif // _HAS_CXX17
 //~ #endif // _STL_COMPILER_PREPROCESSOR
-#endif // _CHARCONV_
+//~ #endif // _CHARCONV_
