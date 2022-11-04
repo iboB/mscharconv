@@ -8,6 +8,10 @@
 #include <algorithm>
 #include <utility>
 
+#if defined(_WIN32)
+#   include <intrin.h>
+#endif
+
 namespace msstl {
 
 namespace impl {
@@ -40,9 +44,7 @@ To bit_cast(const From& val) noexcept {
 }
 
 // intrinsics
-#if defined(_WIN32)
-#   include <intrin.h>
-#else
+#if !defined(_WIN32)
 inline char _BitScanForward(ulong32* bit, uint32_t n) {
     if (!n) return 0;
     *bit = ulong32(__builtin_ctz(n));
