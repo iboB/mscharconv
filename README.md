@@ -1,5 +1,8 @@
 # mscharconv
 
+> [!IMPORTANT]
+> This project has been archived and will no longer be supported as compiler adoption and standard library implementation for charconv is widespread enough now
+
 `<charconv>` from [Microsoft STL](https://github.com/microsoft/STL), but multi-platform.
 
 Tested with MSVC, gcc, and clang on Windows, Linux, and macOS (will likely work on other platforms supported by any of these compilers)
